@@ -5,6 +5,7 @@ import static io.flutter.plugins.webviewflutter.Constants.EXTRA_ACCEPT_TYPES;
 import static io.flutter.plugins.webviewflutter.Constants.EXTRA_ALLOW_MULTIPLE_FILES;
 import static io.flutter.plugins.webviewflutter.Constants.EXTRA_FILE_URIS;
 import static io.flutter.plugins.webviewflutter.Constants.EXTRA_SHOW_IMAGE_OPTION;
+import static io.flutter.plugins.webviewflutter.Constants.EXTRA_SHOW_VIDEO_OPTION;
 import static io.flutter.plugins.webviewflutter.Constants.EXTRA_TITLE;
 import static io.flutter.plugins.webviewflutter.Constants.WEBVIEW_STORAGE_DIRECTORY;
 
@@ -38,7 +39,7 @@ public class FileChooserActivity extends Activity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        showFileChooser(getIntent().getBooleanExtra(EXTRA_SHOW_IMAGE_OPTION, false));
+        showFileChooser(getIntent().getBooleanExtra(EXTRA_SHOW_IMAGE_OPTION, false), getIntent().getBooleanExtra(EXTRA_SHOW_VIDEO_OPTION, false));
     }
 
     private void showFileChooser(boolean showImageIntent, boolean showVideoIntent) {

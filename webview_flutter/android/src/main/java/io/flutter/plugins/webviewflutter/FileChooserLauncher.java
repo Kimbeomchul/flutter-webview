@@ -6,7 +6,6 @@ import static io.flutter.plugins.webviewflutter.Constants.EXTRA_ACCEPT_TYPES;
 import static io.flutter.plugins.webviewflutter.Constants.EXTRA_ALLOW_MULTIPLE_FILES;
 import static io.flutter.plugins.webviewflutter.Constants.EXTRA_FILE_URIS;
 import static io.flutter.plugins.webviewflutter.Constants.EXTRA_SHOW_IMAGE_OPTION;
-import static io.flutter.plugins.webviewflutter.Constants.EXTRA_SHOW_VIDEO_OPTION;
 import static io.flutter.plugins.webviewflutter.Constants.EXTRA_TITLE;
 
 import android.Manifest;
@@ -36,13 +35,10 @@ public class FileChooserLauncher extends BroadcastReceiver {
         this.acceptTypes = acceptTypes;
         if (acceptTypes.length == 0 || (acceptTypes.length == 1 && acceptTypes[0].length() == 0)) { // acceptTypes empty -> accept anything
             imageAcceptable = true;
-            videoAcceptable = true;
         } else {
             for (String acceptType : acceptTypes) {
                 if (acceptType.startsWith("image/")) {
                     imageAcceptable = true;
-                } else if (acceptType.startsWith("video/")) {
-                    videoAcceptable = true;
                 }
             }
         }
@@ -83,7 +79,6 @@ public class FileChooserLauncher extends BroadcastReceiver {
         intent.putExtra(EXTRA_TITLE, title);
         intent.putExtra(EXTRA_ACCEPT_TYPES, acceptTypes);
         intent.putExtra(EXTRA_SHOW_IMAGE_OPTION, imageAcceptable && hasCameraPermission());
-        intent.putExtra(EXTRA_SHOW_VIDEO_OPTION, videoAcceptable && hasCameraPermission());
         intent.putExtra(EXTRA_ALLOW_MULTIPLE_FILES, allowMultipleFiles);
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         context.startActivity(intent);

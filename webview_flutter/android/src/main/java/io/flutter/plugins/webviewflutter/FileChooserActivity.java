@@ -5,7 +5,6 @@ import static io.flutter.plugins.webviewflutter.Constants.EXTRA_ACCEPT_TYPES;
 import static io.flutter.plugins.webviewflutter.Constants.EXTRA_ALLOW_MULTIPLE_FILES;
 import static io.flutter.plugins.webviewflutter.Constants.EXTRA_FILE_URIS;
 import static io.flutter.plugins.webviewflutter.Constants.EXTRA_SHOW_IMAGE_OPTION;
-import static io.flutter.plugins.webviewflutter.Constants.EXTRA_SHOW_VIDEO_OPTION;
 import static io.flutter.plugins.webviewflutter.Constants.EXTRA_TITLE;
 import static io.flutter.plugins.webviewflutter.Constants.WEBVIEW_STORAGE_DIRECTORY;
 
@@ -39,14 +38,13 @@ public class FileChooserActivity extends Activity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        showFileChooser(getIntent().getBooleanExtra(EXTRA_SHOW_IMAGE_OPTION, false), getIntent().getBooleanExtra(EXTRA_SHOW_VIDEO_OPTION, false));
+        showFileChooser(getIntent().getBooleanExtra(EXTRA_SHOW_IMAGE_OPTION, false));
     }
 
     private void showFileChooser(boolean showImageIntent, boolean showVideoIntent) {
         Intent getContentIntent = createGetContentIntent();
         Intent captureImageIntent = showImageIntent ? createCaptureIntent(MediaStore.ACTION_IMAGE_CAPTURE, "jpg") : null;
-        Intent captureVideoIntent = showVideoIntent ? createCaptureIntent(MediaStore.ACTION_VIDEO_CAPTURE, "mp4") : null;
-        if (getContentIntent == null && captureImageIntent == null && captureVideoIntent == null) { // cannot open anything: cancel file chooser
+        if (getContentIntent == null && captureImageIntent == null ) { // cannot open anything: cancel file chooser
             sendBroadcast(new Intent(ACTION_FILE_CHOOSER_FINISHED));
             finish();
         } else {
@@ -56,9 +54,6 @@ public class FileChooserActivity extends Activity {
             }
             if (captureImageIntent != null) {
                 intentList.add(captureImageIntent);
-            }
-            if (captureVideoIntent != null) {
-                intentList.add(captureVideoIntent);
             }
             Intent chooserIntent = new Intent(Intent.ACTION_CHOOSER);
             chooserIntent.putExtra(Intent.EXTRA_TITLE, getIntent().getStringExtra(EXTRA_TITLE));
@@ -77,7 +72,7 @@ public class FileChooserActivity extends Activity {
             filesIntent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true);
         }
         String[] acceptTypes = getIntent().getStringArrayExtra(EXTRA_ACCEPT_TYPES);
-        if (acceptTypes.length == 0 || (acceptTypes.length == 1 && acceptTypes[0].length() == 0)) { // empty array or only 1 empty string? -> accept all types
+        if (acceptTypes.length == 0 || (acceptTypes.length == 1 && acceptTypes[0].length() == 0)) {
             filesIntent.setType("*/*");
         } else if (acceptTypes.length == 1) {
             filesIntent.setType(acceptTypes[0]);

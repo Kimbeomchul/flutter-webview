@@ -23,21 +23,14 @@ import java.util.Locale;
 
 import io.flutter.Log;
 
-/**
- * 文件工具类
- */
+
 public class FileUtil {
     private static final String JPEG_FILE_PREFIX = "IMG_";
     private static final String JPEG_FILE_SUFFIX = ".jpg";
 
     private static final String VIDEO_FILE_PREFIX = "VID_";
     private static final String VIDEO_FILE_SUFFIX = ".mp4";
-    /**
-     * 读取文件为byte[]
-     *
-     * @param filePath
-     * @return
-     */
+
     public static byte[] readFile(String filePath) {
         final File file = new File(filePath);
         if (!file.exists()) {
@@ -55,12 +48,7 @@ public class FileUtil {
         return null;
     }
 
-    /**
-     * 保存文件
-     *
-     * @param filePath
-     * @param data
-     */
+
     public static void saveFile(String filePath, byte[] data) {
         File targetFile = new File(filePath);
         FileOutputStream osw;
@@ -81,12 +69,7 @@ public class FileUtil {
         }
     }
 
-    /**
-     * 文件拷贝
-     *
-     * @param prefile
-     * @param newfile
-     */
+
     public static int copyFile(String prefile, String newfile) {
         try {
             InputStream fosfrom = new FileInputStream(prefile);
@@ -105,78 +88,9 @@ public class FileUtil {
         }
     }
 
-//	/**
-//	 * asset文件夹读取文件
-//	 *
-//	 * @param context
-//	 * @param path
-//	 * @return
-//	 */
-//	public static String readTxtFromAsset(Context context, String path) {
-//		Resources resource = context.getResources();
-//		AssetManager am = resource.getAssets();
-//		InputStream is = null;
-//		String content = "";
-//		try {
-//			is = am.open(path);
-//			int length = is.available();
-//			byte[] buffer = new byte[length];
-//			is.read(buffer);
-//			content = EncodingUtils.getString(buffer, "UTF-8");
-//		} catch (IOException e) {
-//			e.printStackTrace();
-//		}
-//		if (is != null) {
-//			try {
-//				is.close();
-//			} catch (IOException e) {
-//				e.printStackTrace();
-//			}
-//		}
-//		return content;
-//	}
-
-//	/**
-//	 * 从sd卡读文件
-//	 *
-//	 * @param path
-//	 * @return
-//	 */
-//	public static String readTxtFromSd(String path) {
-//		String content = "";
-//		InputStream stream = null;
-//		final File file = new File(path);
-//		if (!file.exists()) {
-//			return null;
-//		}
-//		try {
-//			stream = new FileInputStream(file);
-//			byte[] buffer = new byte[(int) file.length()];
-//			stream.read(buffer);
-//			content = EncodingUtils.getString(buffer, "UTF-8");
-//		} catch (IOException e) {
-//			e.printStackTrace();
-//		}
-//		if (stream != null) {
-//			try {
-//				stream.close();
-//			} catch (IOException e) {
-//				e.printStackTrace();
-//			}
-//		}
-//		return content;
-//	}
-
-    /**
-     * 删除单个文件
-     *
-     * @param sPath 被删除文件的文件
-     * @return 单个文件删除成功返回true，否则返回false
-     */
     public static boolean deleteFile(String sPath) {
         boolean flag = false;
         File file = new File(sPath);
-        // 路径为文件且不为空则进行删除
         if (file.isFile() && file.exists()) {
             file.delete();
             flag = true;
@@ -184,38 +98,28 @@ public class FileUtil {
         return flag;
     }
 
-    /**
-     * 删除目录（文件夹）以及目录下的文
-     *
-     * @param sPath 被删除目录的文件路径
-     * @return 目录删除成功返回true，否则返回false
-     */
     public static boolean deleteDirectory(String sPath) {
-        //如果sPath不以文件分隔符结尾，自动添加文件分隔�?
         if (!sPath.endsWith(File.separator)) {
             sPath = sPath + File.separator;
         }
         File dirFile = new File(sPath);
-        //如果dir对应的文件不存在，或者不是一个目录，则
         if (!dirFile.exists() || !dirFile.isDirectory()) {
             return false;
         }
         boolean flag = true;
-        //删除文件夹下的所有文件包括子目录
         File[] files = dirFile.listFiles();
         for (int i = 0; i < files.length; i++) {
-            //删除子文件
             if (files[i].isFile()) {
                 flag = deleteFile(files[i].getAbsolutePath());
                 if (!flag) break;
-            } //删除子目件
+            } 
             else {
                 flag = deleteDirectory(files[i].getAbsolutePath());
                 if (!flag) break;
             }
         }
         if (!flag) return false;
-        //删除当前目录
+        
         if (dirFile.delete()) {
             return true;
         } else {
@@ -230,7 +134,6 @@ public class FileUtil {
     }
 
 
-    //创建一个文件存放拍照的图片
     public static File createImageFile() throws IOException {
         // Create an image file name
         String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault()).format(new Date());
@@ -240,7 +143,6 @@ public class FileUtil {
         return imageF;
     }
 
-    //创建一个文件存放视频
     public static File createVideoFile() throws IOException {
         // Create an image file name
         String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
@@ -250,7 +152,6 @@ public class FileUtil {
         return imageF;
     }
 
-    //初始化sd卡下存放拍照图片的文件夹
     private static File getAlbumDir() {
         File storageDir = null;
 
@@ -283,10 +184,7 @@ public class FileUtil {
         );
     }
 
-    /**
-     * 获取文件长度
-     * @param filePath
-     */
+ 
     public static long getFileSize(String filePath) {
         if(TextUtils.isEmpty(filePath))return 0;
         File file = new File(filePath);
@@ -297,15 +195,10 @@ public class FileUtil {
     }
 
 
-    /**
-     * 检查SD卡是否挂载
-     *
-     * @return
-     */
     public static boolean checkSDcard(Context context){
         boolean flag = Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED);
         if (!flag) {
-            Toast.makeText(context,"请插入手机存储卡再使用本功能", Toast.LENGTH_SHORT).show();
+            Toast.makeText(context,"SD카드 삽입상태를 확인해주세요", Toast.LENGTH_SHORT).show();
         }
         return flag;
     }

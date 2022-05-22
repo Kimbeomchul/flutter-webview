@@ -519,7 +519,7 @@ public class FlutterWebView implements PlatformView, MethodCallHandler{
     intent1.setDataAndType(
             MediaStore.Images.Media.EXTERNAL_CONTENT_URI, "image/*");
     Intent chooser = new Intent(Intent.ACTION_CHOOSER);
-    chooser.putExtra(Intent.EXTRA_TITLE, "选择图片");
+    chooser.putExtra(Intent.EXTRA_TITLE, "사진선택");
     chooser.putExtra(Intent.EXTRA_INTENT,intent1);
 
     if (WebViewFlutterPlugin.activity != null){
@@ -533,7 +533,7 @@ public class FlutterWebView implements PlatformView, MethodCallHandler{
     if (WebViewFlutterPlugin.activity==null||!FileUtil.checkSDcard(WebViewFlutterPlugin.activity)) {
       return;
     }
-    String[] selectPicTypeStr = {"갤러리에서 선"};
+    String[] selectPicTypeStr = {"갤러리에서 선택하기"};
     new AlertDialog.Builder(WebViewFlutterPlugin.activity)
             .setOnCancelListener(new ReOnCancelListener())
             .setItems(selectPicTypeStr,

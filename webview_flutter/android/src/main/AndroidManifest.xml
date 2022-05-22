@@ -12,7 +12,6 @@
     </provider>
 
         <activity android:name="io.flutter.plugins.webviewflutter.FileChooserActivity"></activity>
-        <activity android:name="io.flutter.plugins.webviewflutter.RequestCameraPermissionActivity"></activity>
     </application>
     <queries>
         <package android:name="com.google.android.apps.photos" />

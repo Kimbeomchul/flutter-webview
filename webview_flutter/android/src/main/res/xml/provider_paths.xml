@@ -1,4 +1,0 @@
-<paths xmlns:android="http://schemas.android.com/apk/res/android">
-    <external-files-path
-        name="safetyapp_images" path="images" />
-</paths>

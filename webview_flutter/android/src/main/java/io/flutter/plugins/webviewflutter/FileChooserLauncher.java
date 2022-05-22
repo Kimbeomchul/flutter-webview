@@ -1,6 +1,7 @@
 package io.flutter.plugins.webviewflutter;
 
 import static io.flutter.plugins.webviewflutter.Constants.ACTION_FILE_CHOOSER_FINISHED;
+import static io.flutter.plugins.webviewflutter.Constants.ACTION_REQUEST_CAMERA_PERMISSION_FINISHED;
 import static io.flutter.plugins.webviewflutter.Constants.EXTRA_ACCEPT_TYPES;
 import static io.flutter.plugins.webviewflutter.Constants.EXTRA_ALLOW_MULTIPLE_FILES;
 import static io.flutter.plugins.webviewflutter.Constants.EXTRA_FILE_URIS;
@@ -34,10 +35,13 @@ public class FileChooserLauncher extends BroadcastReceiver {
         this.acceptTypes = acceptTypes;
         if (acceptTypes.length == 0 || (acceptTypes.length == 1 && acceptTypes[0].length() == 0)) { // acceptTypes empty -> accept anything
             imageAcceptable = true;
+            videoAcceptable = true;
         } else {
             for (String acceptType : acceptTypes) {
                 if (acceptType.startsWith("image/")) {
                     imageAcceptable = true;
+                } else if (acceptType.startsWith("video/")) {
+                    videoAcceptable = true;
                 }
             }
         }
@@ -50,7 +54,26 @@ public class FileChooserLauncher extends BroadcastReceiver {
         }
     }
 
+    private boolean canCameraProduceAcceptableType() {
+        return imageAcceptable || videoAcceptable;
+    }
 
+    private boolean hasCameraPermission() {
+        return ContextCompat.checkSelfPermission(context, Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED;
+    }
+
+    public void start() {
+        if (!canCameraProduceAcceptableType() || hasCameraPermission()) {
+            showFileChooser();
+        } else {
+            IntentFilter intentFilter = new IntentFilter();
+            intentFilter.addAction(ACTION_REQUEST_CAMERA_PERMISSION_FINISHED);
+            context.registerReceiver(this, intentFilter);
+            Intent intent = new Intent(context, RequestCameraPermissionActivity.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            context.startActivity(intent);
+        }
+    }
 
     private void showFileChooser() {
         IntentFilter intentFilter = new IntentFilter(ACTION_FILE_CHOOSER_FINISHED);
@@ -58,7 +81,7 @@ public class FileChooserLauncher extends BroadcastReceiver {
         Intent intent = new Intent(context, FileChooserActivity.class);
         intent.putExtra(EXTRA_TITLE, title);
         intent.putExtra(EXTRA_ACCEPT_TYPES, acceptTypes);
-        intent.putExtra(EXTRA_SHOW_IMAGE_OPTION, imageAcceptable);
+        intent.putExtra(EXTRA_SHOW_IMAGE_OPTION, imageAcceptable && hasCameraPermission());
         intent.putExtra(EXTRA_ALLOW_MULTIPLE_FILES, allowMultipleFiles);
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         context.startActivity(intent);
@@ -66,7 +89,10 @@ public class FileChooserLauncher extends BroadcastReceiver {
 
     @Override
     public void onReceive(Context context, Intent intent) {
-        if (intent.getAction().equals(ACTION_FILE_CHOOSER_FINISHED)) {
+        if (intent.getAction().equals(ACTION_REQUEST_CAMERA_PERMISSION_FINISHED)) {
+            context.unregisterReceiver(this);
+            showFileChooser();
+        } else if (intent.getAction().equals(ACTION_FILE_CHOOSER_FINISHED)) {
             String[] uriStrings = intent.getStringArrayExtra(EXTRA_FILE_URIS);
             Uri[] result = null;
             if (uriStrings != null) {

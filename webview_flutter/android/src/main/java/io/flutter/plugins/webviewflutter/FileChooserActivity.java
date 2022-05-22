@@ -44,7 +44,7 @@ public class FileChooserActivity extends Activity {
     private void showFileChooser(boolean showImageIntent, boolean showVideoIntent) {
         Intent getContentIntent = createGetContentIntent();
         Intent captureImageIntent = showImageIntent ? createCaptureIntent(MediaStore.ACTION_IMAGE_CAPTURE, "jpg") : null;
-        if (getContentIntent == null && captureImageIntent == null ) { // cannot open anything: cancel file chooser
+        if (getContentIntent == null && captureImageIntent == null) { // cannot open anything: cancel file chooser
             sendBroadcast(new Intent(ACTION_FILE_CHOOSER_FINISHED));
             finish();
         } else {
@@ -55,6 +55,7 @@ public class FileChooserActivity extends Activity {
             if (captureImageIntent != null) {
                 intentList.add(captureImageIntent);
             }
+
             Intent chooserIntent = new Intent(Intent.ACTION_CHOOSER);
             chooserIntent.putExtra(Intent.EXTRA_TITLE, getIntent().getStringExtra(EXTRA_TITLE));
             chooserIntent.putExtra(Intent.EXTRA_INTENT, intentList.get(0));
@@ -72,7 +73,7 @@ public class FileChooserActivity extends Activity {
             filesIntent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true);
         }
         String[] acceptTypes = getIntent().getStringArrayExtra(EXTRA_ACCEPT_TYPES);
-        if (acceptTypes.length == 0 || (acceptTypes.length == 1 && acceptTypes[0].length() == 0)) {
+        if (acceptTypes.length == 0 || (acceptTypes.length == 1 && acceptTypes[0].length() == 0)) { // empty array or only 1 empty string? -> accept all types
             filesIntent.setType("*/*");
         } else if (acceptTypes.length == 1) {
             filesIntent.setType(acceptTypes[0]);
